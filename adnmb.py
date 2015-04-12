@@ -48,16 +48,30 @@ def show_board():
         print_color(uid,3);
         print_color(poster,2);
         print_color(create_time,1);
-        print "";
         print_color(content,4)
         print "";
         sort_reply = reply[::-1];
         for j in range(len(sort_reply)):
             reply_id = "t" + str(sort_reply[j])
-            reply_uid = js['data']['replys'][reply_id]['uid'];
-            reply_content = js['data']['replys'][reply_id]['content'];
-            print ">>",
-            print_color(reply_uid,3);
-            print_color(reply_content,5)
-            print ""
+            try:
+                reply_uid = js['data']['replys'][reply_id]['uid'];
+                reply_iid = js['data']['replys'][reply_id]['id'];
+                reply_content = js['data']['replys'][reply_id]['content'];
+                reply_time = js['data']['replys'][reply_id]['createdAt'];
+                reply_time = convert_datetime(reply_time);
+                print "-->",
+                if reply_uid == uid:
+                    print_color(reply_uid,0);
+                else:
+                    print_color(reply_uid,3);
+                print_color(reply_iid,2);
+                print_color(reply_time,1);
+                if reply_content[0:24] == '<font color="#789922">>>':
+                    print_color(">>",1)
+                    print_color(reply_content[24:],5);
+                else:
+                    print_color(reply_content,5);
+                print "";
+            except:
+                pass;
 show_board()

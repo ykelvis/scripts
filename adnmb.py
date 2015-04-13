@@ -45,9 +45,11 @@ def show_board():
         create_time = convert_datetime(create_time);
         content = js['data']['threads'][i]['content'];
         reply = js['data']['threads'][i]['recentReply'];
+        reply_count = js['data']['threads'][i]['replyCount'];
         print_color(uid,3);
         print_color(poster,2);
         print_color(create_time,1);
+        print "(" + str(reply_count) + ")",
         print_color(content,4)
         print "";
         sort_reply = reply[::-1];

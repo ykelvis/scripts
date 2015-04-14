@@ -31,11 +31,11 @@ def download_img(title,link,path):
         pass;
     try:
         image_data = urllib2.urlopen(link).read();
+        image = open(file_path,'wb');
+        image.write(image_data);
+        image.close();
     except:
-        print "Error loading: ", link;
-    image = open(file_path,'wb');
-    image.write(image_data);
-    image.close();
+        print "Error downloading: ", link, title.decode('gbk');
 
 def get_entry_name(data):
     a = re.findall("(?<=title>).*(?=</title)",data)
@@ -51,7 +51,7 @@ if __name__ == "__main__":
         page = get_page_source(i);
         entry_title = get_entry_name(page);
         img_link = get_imgurl(page);
-        print "Downloading ", entry_title," ", link.index(i) + 1, " of ", len(link);
+        print "Downloading ", entry_title[0].decode('gbk')," ", link.index(i) + 1, " of ", len(link);
         for j in img_link:
             print "Downloading img: ", img_link.index(j) + 1, " of ", len(img_link);
             download_img(entry_title[0],j,path)

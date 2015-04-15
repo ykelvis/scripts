@@ -10,18 +10,11 @@ def get_page(arg):
     return data;
 
 def get_all_page_num(arg):
-    return re.findall("(?<=page=)\d(?=\">)",arg);
-
-def delete_duplicated(arg):
-    new_urls = [];
-    for url in arg:
-        if url not in new_urls:
-            new_urls.append(url);
-    return new_urls;
+    reg_num = re.compile(ur'(?<=page=)\d(?=">)');
+    return reg_num.findall(arg);
 
 def get_imglist(arg):
-    imglist = re.findall('http://photos.tuchong.com/\d+/f/\d+.jpg',arg);
-    imglist = delete_duplicated(imglist);
+    imglist = set(re.findall('http://photos.tuchong.com/\d+/f/\d+.jpg',arg));
     return imglist;
 
 def get_title(arg):
@@ -29,33 +22,32 @@ def get_title(arg):
     return title;
 
 def get_blog_url(arg):
-    global author;
-    p = re.compile("http://" + author + ".tuchong.com/\d+/")
+    p = re.compile(ur'(?<= href=")http://.*tuchong.com/\S+(?=/" target="_blank)')
     urls = p.findall(arg);
     return urls;
 
-def download_img(title,link):
+def download_img(title,link,path):
     #current_dir = os.getcwd();
-    global path;
     current_dir = path;
     name = re.findall('(?<=/)\d+.jpg',link)
     save_path = current_dir + "/" + title + "/" + name[0];
     print name
     try:
-        os.mkdir(current_dir + "/" + title);
+        os.makedirs(current_dir + "/" + title);
     except:
         pass; 
-    image_data = urllib2.urlopen(link).read();
-    image = open(save_path,'wb');
-    image.write(image_data);
-    image.close();
-
+    try:
+        image_data = urllib2.urlopen(link).read();
+        image = open(save_path,'wb');
+        image.write(image_data);
+        image.close();
+    except:
+        print "Error downloading: %s" % link
 if __name__ == "__main__":
-    author = sys.argv[1];
-    author_link = "http://" + author + ".tuchong.com";
+    link = sys.argv[1];
     path = sys.argv[2];
     ###
-    page_source = get_page(author_link);
+    page_source = get_page(link);
     url = get_blog_url(page_source);
     
     page = [1];
@@ -64,14 +56,13 @@ if __name__ == "__main__":
         page.append(i);
     
     for i in page:
-        link_with_page = author_link + "/?page=" + str(i);
+        link_with_page = link + "/?page=" + str(i);
         page_source = get_page(link_with_page);
-        urls = get_blog_url(page_source);
-        urls = delete_duplicated(urls);
+        urls = set(get_blog_url(page_source));
         for i in urls:
             blog_source = get_page(i);
             title = get_title(blog_source);
             imglist = get_imglist(blog_source);
             for i in imglist:
-                download_img(title[0].decode('utf-8'),i);
+                download_img(title[0].decode('utf-8'),i,path);
 

@@ -6,8 +6,13 @@ import os
 import sys
 
 def get_page_source(url):
+    req_header = {'User-Agent':'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/42.0.2311.90 Safari/537.36',
+            'Accept':'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
+            'Accept-Charset':'utf-8',
+            }
+    req = urllib2.Request(url,None,req_header);
     try:
-        data = urllib2.urlopen(url).read();
+        data = urllib2.urlopen(req).read();
     except:
         print "Error loading: ",url
     return data;
@@ -30,7 +35,7 @@ def download_img(title,link,path):
     except:
         pass;
     try:
-        image_data = urllib2.urlopen(link).read();
+        image_data = get_page_source(link);
         image = open(file_path,'wb');
         image.write(image_data);
         image.close();
@@ -55,5 +60,4 @@ if __name__ == "__main__":
         for j in img_link:
             print "Downloading img: ", img_link.index(j) + 1, " of ", len(img_link);
             download_img(entry_title[0],j,path)
-    #print a[0].decode('utf-8')
 

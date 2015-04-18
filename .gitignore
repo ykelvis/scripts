@@ -1,1 +1,8 @@
 .DS_Store/
+*.txt
+*.jpg
+*.png
+*.gif
+*.bmp
+*.webp
+*/

@@ -1,4 +1,6 @@
 .DS_Store/
+*.xlsx
+*.xls
 *.txt
 *.jpg
 *.png

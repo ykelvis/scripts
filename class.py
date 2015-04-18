@@ -36,13 +36,12 @@ def download_img(link1,link2,mode,blogger):
         file_path = mode + "/" + blogger + "/" + name;
         try:
             open(file_path);
-            print "Already downloaded, do nothing"
+            print ".",
         except:
             image_data = get_page_source(link2);
             image = open(file_path,'wb');
             image.write(image_data);
             image.close();
-            print "Downloaded, ", file_path;
             pass;
     except:
         print "Retrying..."
@@ -50,13 +49,12 @@ def download_img(link1,link2,mode,blogger):
         file_path = mode + "/" + blogger + "/" + name;
         try:
             open(file_path);
-            print "Already downloaded, do nothing"
+            print ".",
         except:
             image_data = get_page_source(link1);
             image = open(file_path,'wb');
             image.write(image_data);
             image.close();
-            print "Downloaded, ", file_path;
             pass
 
 if __name__ == "__main__":
@@ -75,5 +73,9 @@ if __name__ == "__main__":
             regx = regx_tumblr;
         data = get_page_source(url);
         a,b = return_imglist(data,regx,mode);
+        print "Downloading, ", _url;
         for i in range(len(a)):
-            download_img(a[i],b[i],mode,_url)
+            try:
+                download_img(a[i],b[i],mode,_url);
+            except:
+                print "Failed, ", a[i]

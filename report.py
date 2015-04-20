@@ -1,3 +1,4 @@
+#-*- coding: utf-8 -*-
 #!/usr/bin/python
 import sys;
 import xlrd;
@@ -21,7 +22,10 @@ def write_to_local_xlsx(file_name,array,mode):
             if table.cell(i,j).ctype == 3:
                 new_worksheet.write(i+1,j,array[i][j].value,date_format);
             else:
-                new_worksheet.write(i+1,j,array[i][j].value);
+                if type(array[i][j]) == str:
+                    new_worksheet.write(i+1,j,array[i][j]);
+                else:
+                    new_worksheet.write(i+1,j,array[i][j].value);
     #dont forget first line
     if mode == 1:
         length_first_line = len(table.row(0));
@@ -31,12 +35,15 @@ def write_to_local_xlsx(file_name,array,mode):
         pass;
     new_workbook.close();
 
-def get_cell_index(cell,array,row):
-    for i in range(len(array[row])):
-        if str(array[row][i]) == cell:
-            return i;
-        else:
-            continue;
+def get_cell_index(cell,array,index_row):
+    a = [];
+    for i in cell:
+        for j in range(len(array[index_row])):
+            if str(array[index_row][j]) == i:
+                a.append(j);
+            else:
+                continue;
+    return a;
 
 def get_dl(array,area,grade):
     a = [];
@@ -52,47 +59,34 @@ def get_idl(array,area,grade):
             a.append(array[i]);
     return a;
 
-def production_list(array,e_type):
+def production_list(array,col_index):
     for i in range(len(array)):
-        if "Fix Term" or "Regular" in str(array[i][e_type]):
-            array[i].append("zhengshi");
+        if "Fixed Term" or "Regular" in str(array[i][2]) == True:
+            print str(array[i][2])
+            array[i].append("zhengshigong");
+        elif "X001" or "x001" in str(array[i][col_index[0]]):
+            array[i].append("intern");
     return array;
 
-def get_useful_col(array,start_row,rows,col):
+def get_useful_col(array,start_row,col):
     a = [];
-    for i in range(start_row,rows):
+    for i in range(start_row,len(array)):
         a.append([]);
         for j in col:
             a[-1].append(array[i][j]); #array is not origin,so index not working.
     return a;
 
-'''
-if __name__ == '__main__':
-    origin = sys.argv[1]
-    to_file = "modified-" + origin;
-    wbook = xlrd.open_workbook(origin,on_demand=True);
-    table = wbook.sheets()[0];
-    rows = table.nrows;
-    to_write = all_data_to_array(origin);
-    write_to_local_xlsx(to_file);
-    '''
 origin = sys.argv[1]
 wbook = xlrd.open_workbook(origin,on_demand=True);
 table = wbook.sheets()[0];
+
 rows = table.nrows;
 to_write = all_data_to_array(origin);
-col_workarea = get_cell_index("text:u'Work_Area'",to_write,5);
-col_employee_id = get_cell_index("text:u'Employee_ID'",to_write,5);
-col_compensation_grade = get_cell_index("text:u'Compensation_Grade'",to_write,5)
-col_gender = get_cell_index("text:u'Gender'",to_write,5);
-col_hire_date = get_cell_index("text:u'Hire_Date'",to_write,5);
-col_employee_type = get_cell_index("text:u'Employee_Type'",to_write,5)
+_rows = len(to_write);
+col_index = get_cell_index(["text:u'China_Badge_Number'","text:u'Work'","text:u'Employee_ID","text:u'Compensation_Grade'","text:u'Gender'","text:u'Hire_Date'","text:u'Employee_Type'"],to_write,5)
 
-print col_employee_id,col_gender,col_hire_date,col_workarea,col_compensation_grade,col_employee_type;
-col = [col_employee_id,col_gender,col_hire_date,col_workarea,col_compensation_grade,col_employee_type];
-
-length = len(to_write);
-
-info = get_dl(to_write,col_workarea,col_compensation_grade);
-info = get_useful_col(info,5,rows,col)
-write_to_local_xlsx("idl.xlsx",info,1)
+info = get_useful_col(to_write,0,col_index)
+prolist = production_list(info,col_index)
+#print prolist
+#print type(prolist[0][3])
+write_to_local_xlsx("idl.xlsx",prolist,1)

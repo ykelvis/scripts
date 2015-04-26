@@ -102,9 +102,9 @@ if __name__ == "__main__":
         info = get_useful_col(to_write,0,col_index)
         prolist = production_list(info,4,5,6)
         prolist = get_headcount(prolist)
-        cut_compile = re.compile('(?<=\uff08).*(?=\\\uff09)');
-        for i in range(1,len(prolist)):
-            a = cut_compile.findall(str(prolist[i][1]))
-            print a[0];
-            prolist[i][1] = a[0]
+        #cut_compile = re.compile('(?<=\uff08).*(?=\\\uff09)');
+        #for i in range(1,len(prolist)):
+            #a = cut_compile.findall(str(prolist[i][1]))
+            #print a[0];
+            #prolist[i][1] = a[0]
         write_to_local_xlsx(to_file_name,prolist,1)

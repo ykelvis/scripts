@@ -50,6 +50,30 @@ def getReplyIDs(js,index):
     message_id = js['result'][index]['message']['message_id']
     return chat_id, message_id
 
+def dice():
+    text = response['result'][i]['message']['text']
+    try:
+        x,y,z = text.split(" ")
+        if y < z:
+            text = random.randrange(int(y),int(z))
+            sendMessage(token,a,b,text)
+        else:
+            sendMessage(token,a,b,"（〃｀д´ )( ´ｪ`)")
+    except:
+        sendMessage(token,a,b,"/dice num1 num2\n//num1 < num2")
+
+def choice():
+    text = response['result'][i]['message']['text']
+    if text == "/choice":
+        reply = "/choice choice1 choice2 choice3 choice4 ..."
+        sendMessage(token,a,b,reply)
+    else:
+        arr = text.split(" ")
+        arr.pop(0)
+        text = random.choice(arr)
+        sendMessage(token,a,b,text)
+    return 0
+
 def calBattery():
     dateToday = datetime.date.today()
     timeEnds = datetime.time(21,50,00)
@@ -85,6 +109,10 @@ if __name__ == "__main__":
                         #sendMessage(token,a,b,"（〃｀д´ )( ´ｪ`)")
                     elif response['result'][i]['message']['text'] == "/crossdressfubuki":
                         sendMessage(token,a,b,"🌚")
+                    elif "/dice" in response['result'][i]['message']['text']:
+                        dice();
+                    elif "/choice" in response['result'][i]['message']['text']:
+                        choice();
                     else:
                         sendMessage(token,a,b,"🍼")
         offset_old = offset 

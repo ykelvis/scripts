@@ -95,7 +95,7 @@ if __name__ == "__main__":
         if offset == offset_old:
             pass;
         else:
-            print offset
+            print offset,
             for i in range(1,len(response['result'])):
                 a,b = getReplyIDs(response,i)
                 text = calBattery()
@@ -103,23 +103,29 @@ if __name__ == "__main__":
                 if r.has_key("text"):
                     if response['result'][i]['message']['text'] == "/batteryreport":
                         sendMessage(token,a,b,text)
-                        print "sent battery report"
+                        print "sent battery report",
+                        print datetime.datetime.now()
                     elif response['result'][i]['message']['text'] == "/leg":
                         img = getImg(folder)
                         sendPhoto(token,a,b,img)
-                        print "sent photo"
+                        print "sent photo",
+                        print datetime.datetime.now()
                         #sendMessage(token,a,b,"（〃｀д´ )( ´ｪ`)")
                     elif response['result'][i]['message']['text'] == "/crossdressfubuki":
                         sendMessage(token,a,b,"🌚")
-                        print "crossdress requested"
+                        print "crossdress requested",
+                        print datetime.datetime.now()
                     elif "/dice" in response['result'][i]['message']['text']:
                         dice();
-                        print "dice"
+                        print "dice",
+                        print datetime.datetime.now()
                     elif "/choice" in response['result'][i]['message']['text']:
                         choice();
-                        print "choice"
+                        print "choice",
+                        print datetime.datetime.now()
                     else:
                         sendMessage(token,a,b,"🍼")
-                        print "whadafu!?"
+                        print "whadafu!?",
+                        print datetime.datetime.now()
         offset_old = offset 
         time.sleep(1);

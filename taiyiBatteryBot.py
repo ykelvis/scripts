@@ -1,5 +1,7 @@
+# coding=utf-8
 #!/usr/bin/python
 from requests_toolbelt.multipart.encoder import MultipartEncoder
+import os,random
 import sys
 import time
 import datetime
@@ -26,15 +28,23 @@ def sendMessage(token,chat_id,message_id,text):
 ).json()
     return response
 
-def sendPhoto(token,chat_id,message_id):
-    photo = open("1.jpg",'rb')
-    print photo
+def sendPhoto(token,chat_id,message_id,img):
     response = requests.post(
-        url='https://api.telegram.org/bot' + token + "/sendMessage",
+        url='https://api.telegram.org/bot' + token + "/sendPhoto",
         data={'chat_id': chat_id,'reply_to_message_id': message_id},
-        files={'photo': photo},
+        files={'photo': img},
 ).json
     return response
+
+def getImg(folder):
+    a = [];
+    for f in os.listdir(folder):
+        if os.path.isfile(os.path.join(folder,f)):
+            a.append(f);
+    pic = random.choice(a);
+    picLoc = os.path.join(folder,pic)
+    img = open(picLoc,'rb')
+    return img
 
 def getReplyIDs(js,index):
     chat_id = js['result'][index]['message']['chat']['id']
@@ -69,10 +79,13 @@ if __name__ == "__main__":
                 if r.has_key("text"):
                     if response['result'][i]['message']['text'] == "/batteryreport":
                         sendMessage(token,a,b,text)
+                    elif response['result'][i]['message']['text'] == "/leg":
+                        #img = getImg("/Users/yk/Downloads/New/")
+                        #sendPhoto(token,a,b,img)
+                        sendMessage(token,a,b,"¼〃｀д´ )( ´ｪ`))")
                     elif response['result'][i]['message']['text'] == "/crossdressfubuki":
-                        #sendMessage(token,a,b,"test img")
-                        sendPhoto(token,a,b)
+                        sendMessage(token,a,b,"🌚")
                     else:
-                        sendMessage(token,a,b,"command not found")
+                        sendMessage(token,a,b,"🍼")
         offset_old = offset 
-        time.sleep(2);
+        time.sleep(1);

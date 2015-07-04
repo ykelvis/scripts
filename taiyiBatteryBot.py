@@ -65,7 +65,7 @@ def dice():
 
 def choice():
     text = response['result'][i]['message']['text']
-    if text == "/choice":
+    if text.split("@",1)[0] == "/choice":
         reply = "/choice choice1 choice2 choice3 choice4 ..."
         sendMessage(token,a,b,reply)
     else:
@@ -74,6 +74,11 @@ def choice():
         text = random.choice(arr)
         sendMessage(token,a,b,text)
     return 0
+
+def printLog(requestName):
+    firstName = response['result'][i]['message']['from']['first_name']
+    chat = response['result'] [i]['message']['chat']['id']
+    print firstName, requestName, chat, time.time(), offset
 
 def calBattery():
     dateToday = datetime.date.today()
@@ -101,7 +106,6 @@ if __name__ == "__main__":
         if offset == offset_old:
             pass;
         else:
-            print offset,
             for i in range(1,len(response['result'])):
                 a,b = getReplyIDs(response,i)
                 res = response['result'][i]['message']
@@ -110,8 +114,7 @@ if __name__ == "__main__":
                     if t == "/batteryreport":
                         text = calBattery()
                         sendMessage(token,a,b,text)
-                        print "sent battery report",
-                        print datetime.datetime.now(),
+                        printLog("bat")
                     elif t == "/leg":
                         if a < 0:
                             rate.append(time.time())
@@ -119,13 +122,12 @@ if __name__ == "__main__":
                                 rate = []
                                 img = getImg(folder)
                                 sendPhoto(token,a,b,img)
-                                print "sent photo",
-                                print datetime.datetime.now()
+                                printLog('leg')
                             elif len(rate) <= 5:
                                 img = getImg(folder)
                                 sendPhoto(token,a,b,img)
-                                print "sent photo",
-                                print datetime.datetime.now()
+                                print "sent photo"
+                                printLog('leg')
                             else:
                                 sec = int(rate[-1] - rate[0])
                                 text = "（〃｀д´ )( ´ｪ`) wait, " + str(600 - sec) + " seconds..."
@@ -135,24 +137,20 @@ if __name__ == "__main__":
                             img = getImg(folder)
                             sendPhoto(token,a,b,img)
                             print "sent photo",
-                            print datetime.datetime.now()
+                            printLog('leg')
 
                     elif t == "/crossdressfubuki":
                         sendMessage(token,a,b,"🌚")
-                        print "crossdress requested",
-                        print datetime.datetime.now()
+                        printLog('cross')
                     elif t == "/dice":
                         dice();
-                        print "dice",
-                        print datetime.datetime.now()
+                        printLog('dice')
                     elif t == "/choice":
                         choice();
-                        print "choice",
-                        print datetime.datetime.now()
+                        printLog('choice')
                     else:
                         reply = random.choice(randReply);
                         sendMessage(token,a,b,reply)
-                        print "whadafu!?",
-                        print datetime.datetime.now()
+                        printLog('whadafu!?')
         offset_old = offset 
         time.sleep(1);

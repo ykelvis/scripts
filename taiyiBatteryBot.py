@@ -103,17 +103,23 @@ if __name__ == "__main__":
                 if r.has_key("text"):
                     if response['result'][i]['message']['text'] == "/batteryreport":
                         sendMessage(token,a,b,text)
+                        print "sent battery report"
                     elif response['result'][i]['message']['text'] == "/leg":
                         img = getImg(folder)
                         sendPhoto(token,a,b,img)
+                        print "sent photo"
                         #sendMessage(token,a,b,"（〃｀д´ )( ´ｪ`)")
                     elif response['result'][i]['message']['text'] == "/crossdressfubuki":
                         sendMessage(token,a,b,"🌚")
+                        print "crossdress requested"
                     elif "/dice" in response['result'][i]['message']['text']:
                         dice();
+                        print "dice"
                     elif "/choice" in response['result'][i]['message']['text']:
                         choice();
+                        print "choice"
                     else:
                         sendMessage(token,a,b,"🍼")
+                        print "whadafu!?"
         offset_old = offset 
         time.sleep(1);

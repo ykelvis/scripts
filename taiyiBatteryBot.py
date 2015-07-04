@@ -1,4 +1,5 @@
 #!/usr/bin/python
+from requests_toolbelt.multipart.encoder import MultipartEncoder
 import sys
 import time
 import datetime
@@ -25,11 +26,14 @@ def sendMessage(token,chat_id,message_id,text):
 ).json()
     return response
 
-def sendPhoto(token,chat_id,message_id,img):
+def sendPhoto(token,chat_id,message_id):
+    photo = open("1.jpg",'rb')
+    print photo
     response = requests.post(
         url='https://api.telegram.org/bot' + token + "/sendMessage",
-        data={'chat_id': chat_id,'reply_to_message_id': message_id, 'photo': img}
-).json()
+        data={'chat_id': chat_id,'reply_to_message_id': message_id},
+        files={'photo': photo},
+).json
     return response
 
 def getReplyIDs(js,index):
@@ -66,9 +70,8 @@ if __name__ == "__main__":
                     if response['result'][i]['message']['text'] == "/batteryreport":
                         sendMessage(token,a,b,text)
                     elif response['result'][i]['message']['text'] == "/crossdressfubuki":
-                        img = open("1.jpg",'rb')
-                        sendMessage(token,a,b,"test img")
-                        sendPhoto(token,a,b,img)
+                        #sendMessage(token,a,b,"test img")
+                        sendPhoto(token,a,b)
                     else:
                         sendMessage(token,a,b,"command not found")
         offset_old = offset 

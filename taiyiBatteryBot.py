@@ -66,7 +66,6 @@ def dice():
 def choice():
     text = response['result'][i]['message']['text']
     if text == "/choice":
-    if "/choice" in response['result'][i]['message']['text']:
         reply = "/choice choice1 choice2 choice3 choice4 ..."
         sendMessage(token,a,b,reply)
     else:

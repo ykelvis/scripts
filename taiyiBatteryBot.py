@@ -5,17 +5,30 @@ import datetime
 import json
 import requests
 
-def getFromTelegram(token,method,offset):
+def getMe(token):
     response = requests.post(
-        url='https://api.telegram.org/bot' + token + "/" + method,
+    url='https://api.telegram.org/bot' + token + "/" + method
+).json()
+    return response;
+
+def getUpdates(token,offset):
+    response = requests.post(
+        url='https://api.telegram.org/bot' + token + "/getUpdates",
         data={'offset': offset}
 ).json()
     return response;
 
-def postToTelegram(token,method,chat_id,message_id,text):
+def sendMessage(token,chat_id,message_id,text):
     response = requests.post(
-        url='https://api.telegram.org/bot' + token + "/" + method,
+        url='https://api.telegram.org/bot' + token + "/sendMessage",
         data={'chat_id': chat_id,'reply_to_message_id': message_id, 'text': text}
+).json()
+    return response
+
+def sendPhoto(token,chat_id,message_id,img):
+    response = requests.post(
+        url='https://api.telegram.org/bot' + token + "/sendMessage",
+        data={'chat_id': chat_id,'reply_to_message_id': message_id, 'photo': img}
 ).json()
     return response
 
@@ -39,9 +52,8 @@ if __name__ == "__main__":
     offset = sys.argv[2]
     offset_old = 0
     while True:
-        time.sleep(2);
         print offset
-        response = getFromTelegram(token,"getUpdates",offset)
+        response = getUpdates(token,offset)
         offset = response['result'][-1]['update_id']
         if offset == offset_old:
             pass;
@@ -49,10 +61,15 @@ if __name__ == "__main__":
             for i in range(1,len(response['result'])):
                 a,b = getReplyIDs(response,i)
                 text = calBattery()
-                if response['result'][i]['message']['text'] == "/batteryreport":
-                    postToTelegram(token,"sendMessage",a,b,text)
-                #elif response['result'][i]['message']['text'] == "/fuckfubuki":
-                    #postToTelegram(token,"sendMessage",a,b,"fuck @fhoshino")
-                else:
-                    postToTelegram(token,"sendMessage",a,b,"command not found")
+                r = response['result'][i]['message']
+                if r.has_key("text"):
+                    if response['result'][i]['message']['text'] == "/batteryreport":
+                        sendMessage(token,a,b,text)
+                    elif response['result'][i]['message']['text'] == "/crossdressfubuki":
+                        img = open("1.jpg",'rb')
+                        sendMessage(token,a,b,"test img")
+                        sendPhoto(token,a,b,img)
+                    else:
+                        sendMessage(token,a,b,"command not found")
         offset_old = offset 
+        time.sleep(2);

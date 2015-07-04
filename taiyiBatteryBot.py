@@ -112,23 +112,30 @@ if __name__ == "__main__":
                         print "sent battery report",
                         print datetime.datetime.now(),
                     elif response['result'][i]['message']['text'] == "/leg":
-                        rate.append(time.time())
-                        if len(rate) > 5 and (rate[-1] - rate[0] > 600):
-                            rate = []
-                            img = getImg(folder)
-                            sendPhoto(token,a,b,img)
-                            print "sent photo",
-                            print datetime.datetime.now()
-                        elif len(rate) <= 5:
-                            img = getImg(folder)
-                            sendPhoto(token,a,b,img)
-                            print "sent photo",
-                            print datetime.datetime.now()
+                        if a < 0:
+                            rate.append(time.time())
+                            if len(rate) > 5 and (rate[-1] - rate[0] > 600):
+                                rate = []
+                                img = getImg(folder)
+                                sendPhoto(token,a,b,img)
+                                print "sent photo",
+                                print datetime.datetime.now()
+                            elif len(rate) <= 5:
+                                img = getImg(folder)
+                                sendPhoto(token,a,b,img)
+                                print "sent photo",
+                                print datetime.datetime.now()
+                            else:
+                                sec = int(rate[-1] - rate[0])
+                                text = "（〃｀д´ )( ´ｪ`) wait, " + str(600 - sec) + " seconds..."
+                                #sendMessage(token,a,b,text)
+                                print text
                         else:
-                            sec = int(rate[-1] - rate[0])
-                            text = "（〃｀д´ )( ´ｪ`) wait, " + str(600 - sec) + " seconds..."
-                            #sendMessage(token,a,b,text)
-                            print text
+                            img = getImg(folder)
+                            sendPhoto(token,a,b,img)
+                            print "sent photo",
+                            print datetime.datetime.now()
+
                     elif response['result'][i]['message']['text'] == "/crossdressfubuki":
                         sendMessage(token,a,b,"🌚")
                         print "crossdress requested",

@@ -43,7 +43,7 @@ def getImg(folder):
     pic = random.choice(a);
     picLoc = os.path.join(folder,pic)
     img = open(picLoc,'rb')
-    print picLoc
+    print pic,
     return img
 
 def getReplyIDs(js,index):
@@ -106,7 +106,7 @@ if __name__ == "__main__":
                         text = calBattery()
                         sendMessage(token,a,b,text)
                         print "sent battery report",
-                        print datetime.datetime.now()
+                        print datetime.datetime.now(),
                     elif response['result'][i]['message']['text'] == "/leg":
                         img = getImg(folder)
                         sendPhoto(token,a,b,img)

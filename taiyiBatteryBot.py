@@ -66,6 +66,7 @@ def dice():
 def choice():
     text = response['result'][i]['message']['text']
     if text == "/choice":
+    if "/choice" in response['result'][i]['message']['text']:
         reply = "/choice choice1 choice2 choice3 choice4 ..."
         sendMessage(token,a,b,reply)
     else:
@@ -133,11 +134,11 @@ if __name__ == "__main__":
                         sendMessage(token,a,b,"🌚")
                         print "crossdress requested",
                         print datetime.datetime.now()
-                    elif "/dice" in response['result'][i]['message']['text']:
+                    elif response['result'][i]['message']['text'].split(" ",1) == "/dice":
                         dice();
                         print "dice",
                         print datetime.datetime.now()
-                    elif "/choice" in response['result'][i]['message']['text']:
+                    elif response['result'][i]['message']['text'].split(" ",1) == "/choice":
                         choice();
                         print "choice",
                         print datetime.datetime.now()

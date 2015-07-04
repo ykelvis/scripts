@@ -99,10 +99,10 @@ if __name__ == "__main__":
             print offset,
             for i in range(1,len(response['result'])):
                 a,b = getReplyIDs(response,i)
-                text = calBattery()
                 r = response['result'][i]['message']
                 if r.has_key("text"):
                     if response['result'][i]['message']['text'] == "/batteryreport":
+                        text = calBattery()
                         sendMessage(token,a,b,text)
                         print "sent battery report",
                         print datetime.datetime.now()

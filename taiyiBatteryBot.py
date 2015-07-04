@@ -104,14 +104,15 @@ if __name__ == "__main__":
             print offset,
             for i in range(1,len(response['result'])):
                 a,b = getReplyIDs(response,i)
-                r = response['result'][i]['message']
-                if r.has_key("text"):
-                    if response['result'][i]['message']['text'] == "/batteryreport":
+                res = response['result'][i]['message']
+                if res.has_key("text"):
+                    t = res['text'].split("@",1)[0]
+                    if t == "/batteryreport":
                         text = calBattery()
                         sendMessage(token,a,b,text)
                         print "sent battery report",
                         print datetime.datetime.now(),
-                    elif response['result'][i]['message']['text'] == "/leg":
+                    elif t == "/leg":
                         if a < 0:
                             rate.append(time.time())
                             if len(rate) > 5 and (rate[-1] - rate[0] > 600):
@@ -136,15 +137,15 @@ if __name__ == "__main__":
                             print "sent photo",
                             print datetime.datetime.now()
 
-                    elif response['result'][i]['message']['text'] == "/crossdressfubuki":
+                    elif t == "/crossdressfubuki":
                         sendMessage(token,a,b,"🌚")
                         print "crossdress requested",
                         print datetime.datetime.now()
-                    elif response['result'][i]['message']['text'].split(" ",1)[0] == "/dice":
+                    elif res['text'].split(" ",1)[0] == "/dice":
                         dice();
                         print "dice",
                         print datetime.datetime.now()
-                    elif response['result'][i]['message']['text'].split(" ",1)[0] == "/choice":
+                    elif res['text'].split(" ",1)[0] == "/choice":
                         choice();
                         print "choice",
                         print datetime.datetime.now()

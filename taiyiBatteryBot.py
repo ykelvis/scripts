@@ -64,6 +64,7 @@ def calBattery():
 if __name__ == "__main__":
     token = sys.argv[1]
     offset = sys.argv[2]
+    folder = sys.argv[3]
     offset_old = 0
     while True:
         print offset
@@ -80,7 +81,7 @@ if __name__ == "__main__":
                     if response['result'][i]['message']['text'] == "/batteryreport":
                         sendMessage(token,a,b,text)
                     elif response['result'][i]['message']['text'] == "/leg":
-                        #img = getImg("/Users/yk/Downloads/New/")
+                        #img = getImg(folder)
                         #sendPhoto(token,a,b,img)
                         sendMessage(token,a,b,"（〃｀д´ )( ´ｪ`)")
                     elif response['result'][i]['message']['text'] == "/crossdressfubuki":

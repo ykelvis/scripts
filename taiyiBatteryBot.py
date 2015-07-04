@@ -124,7 +124,8 @@ if __name__ == "__main__":
                         else:
                             sec = int(rate[-1] - rate[0])
                             text = "（〃｀д´ )( ´ｪ`) wait, " + str(600 - sec) + " seconds..."
-                            sendMessage(token,a,b,text)
+                            #sendMessage(token,a,b,text)
+                            print text
                     elif response['result'][i]['message']['text'] == "/crossdressfubuki":
                         sendMessage(token,a,b,"🌚")
                         print "crossdress requested",

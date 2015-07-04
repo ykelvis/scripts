@@ -1,6 +1,5 @@
 # coding=utf-8
 #!/usr/bin/python
-from requests_toolbelt.multipart.encoder import MultipartEncoder
 import os,random
 import sys
 import time

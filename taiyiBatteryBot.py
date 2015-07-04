@@ -84,10 +84,10 @@ def calBattery():
     batteryNow = datetime.datetime.now()
     result = float((batteryEnds - batteryNow).total_seconds())/float((batteryEnds - batteryStarts).total_seconds())
     if result <= 0:
-        return "((((；ﾟДﾟ)))))))))))"
+        r = "((((；ﾟДﾟ)))))))))))"
     else:
-        return "{:.2%}".format(result)
-
+        r = "{:.2%}".format(result)
+    return r;
 if __name__ == "__main__":
     token = sys.argv[1]
     offset = sys.argv[2]

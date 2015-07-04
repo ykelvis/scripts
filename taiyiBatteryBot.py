@@ -80,8 +80,8 @@ if __name__ == "__main__":
                     if response['result'][i]['message']['text'] == "/batteryreport":
                         sendMessage(token,a,b,text)
                     elif response['result'][i]['message']['text'] == "/leg":
-                        img = getImg(folder)
-                        sendPhoto(token,a,b,img)
+                        #img = getImg(folder)
+                        #sendPhoto(token,a,b,img)
                         sendMessage(token,a,b,"（〃｀д´ )( ´ｪ`)")
                     elif response['result'][i]['message']['text'] == "/crossdressfubuki":
                         sendMessage(token,a,b,"🌚")

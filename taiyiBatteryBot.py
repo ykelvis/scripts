@@ -55,7 +55,7 @@ def dice():
     text = response['result'][i]['message']['text']
     try:
         x,y,z = text.split(" ")
-        if y < z:
+        if int(y) < int(z):
             text = random.randrange(int(y),int(z))
             sendMessage(token,a,b,text)
         else:

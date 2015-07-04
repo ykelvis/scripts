@@ -141,11 +141,11 @@ if __name__ == "__main__":
                         sendMessage(token,a,b,"🌚")
                         print "crossdress requested",
                         print datetime.datetime.now()
-                    elif res['text'].split(" ",1)[0] == "/dice":
+                    elif t == "/dice":
                         dice();
                         print "dice",
                         print datetime.datetime.now()
-                    elif res['text'].split(" ",1)[0] == "/choice":
+                    elif t == "/choice":
                         choice();
                         print "choice",
                         print datetime.datetime.now()

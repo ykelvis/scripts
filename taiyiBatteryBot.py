@@ -78,7 +78,7 @@ def choice():
 def printLog(requestName):
     firstName = response['result'][i]['message']['from']['first_name']
     chat = response['result'] [i]['message']['chat']['id']
-    print firstName, requestName, chat, datetime.time.now(), offset
+    print datetime.datetime.now(), offset, firstName, requestName, chat
 
 def calBattery():
     dateToday = datetime.date.today()

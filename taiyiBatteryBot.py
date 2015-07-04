@@ -79,6 +79,7 @@ def printLog(requestName):
     firstName = response['result'][i]['message']['from']['first_name']
     chat = response['result'] [i]['message']['chat']['id']
     print datetime.datetime.now(), offset, firstName, requestName, chat
+    return 0;
 
 def calBattery():
     dateToday = datetime.date.today()

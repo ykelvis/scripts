@@ -142,10 +142,10 @@ if __name__ == "__main__":
                     elif t == "/crossdressfubuki":
                         sendMessage(token,a,b,"🌚")
                         printLog('cross')
-                    elif t == "/dice":
+                    elif t.split(" ",1)[0] == "/dice":
                         dice();
                         printLog('dice')
-                    elif t == "/choice":
+                    elif t.split(" ",1)[0] == "/choice":
                         choice();
                         printLog('choice')
                     else:

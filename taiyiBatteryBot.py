@@ -43,6 +43,7 @@ def getImg(folder):
     pic = random.choice(a);
     picLoc = os.path.join(folder,pic)
     img = open(picLoc,'rb')
+    print picLoc
     return img
 
 def getReplyIDs(js,index):
@@ -92,7 +93,7 @@ if __name__ == "__main__":
     while True:
         response = getUpdates(token,offset)
         offset = response['result'][-1]['update_id']
-        randReply = ["🌚","🍼","GTMDFBK","GTMDSRR","GTMDYK","GTMDSORA","（〃｀д´ )( ´ｪ`)","辣鸡。"]
+        randReply = ["🌚","🍼","GTMDFBK","GTMDSRR","GTMDYK","GTMDSORA","（〃｀д´ )( ´ｪ`)","辣鸡。","朕知道了。"]
         if offset == offset_old:
             pass;
         else:

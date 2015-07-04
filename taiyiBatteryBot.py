@@ -90,12 +90,12 @@ if __name__ == "__main__":
     folder = sys.argv[3]
     offset_old = 0
     while True:
-        print offset
         response = getUpdates(token,offset)
         offset = response['result'][-1]['update_id']
         if offset == offset_old:
             pass;
         else:
+            print offset
             for i in range(1,len(response['result'])):
                 a,b = getReplyIDs(response,i)
                 text = calBattery()

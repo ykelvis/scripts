@@ -82,7 +82,7 @@ if __name__ == "__main__":
                     elif response['result'][i]['message']['text'] == "/leg":
                         #img = getImg("/Users/yk/Downloads/New/")
                         #sendPhoto(token,a,b,img)
-                        sendMessage(token,a,b,"¼〃｀д´ )( ´ｪ`))")
+                        sendMessage(token,a,b,"（〃｀д´ )( ´ｪ`)")
                     elif response['result'][i]['message']['text'] == "/crossdressfubuki":
                         sendMessage(token,a,b,"🌚")
                     else:

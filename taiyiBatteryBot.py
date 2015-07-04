@@ -92,6 +92,7 @@ if __name__ == "__main__":
     while True:
         response = getUpdates(token,offset)
         offset = response['result'][-1]['update_id']
+        randReply = ["🌚","🍼","GTMDFBK","GTMDSRR","GTMDYK","GTMDSORA","（〃｀д´ )( ´ｪ`)","辣鸡。"]
         if offset == offset_old:
             pass;
         else:
@@ -124,7 +125,8 @@ if __name__ == "__main__":
                         print "choice",
                         print datetime.datetime.now()
                     else:
-                        sendMessage(token,a,b,"🍼")
+                        reply = random.choice(randReply);
+                        sendMessage(token,a,b,reply)
                         print "whadafu!?",
                         print datetime.datetime.now()
         offset_old = offset 

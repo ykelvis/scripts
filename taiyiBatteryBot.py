@@ -163,7 +163,7 @@ if __name__ == "__main__":
                         printLog('say')
                     else:
                         reply = random.choice(randReply);
-                        #sendMessage(token,a,b,reply)
+                        sendMessage(token,a,b,reply)
                         printLog('whadafu!?')
         offset_old = offset 
         time.sleep(1);

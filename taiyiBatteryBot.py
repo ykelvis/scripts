@@ -137,7 +137,6 @@ if __name__ == "__main__":
                             elif len(rate) <= 5:
                                 img = getImg(folder)
                                 sendPhoto(token,a,b,img)
-                                print "sent photo"
                                 printLog('leg')
                             else:
                                 sec = int(rate[-1] - rate[0])

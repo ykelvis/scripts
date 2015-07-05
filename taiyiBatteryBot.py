@@ -81,6 +81,14 @@ def printLog(requestName):
     print datetime.datetime.now(), offset, firstName, requestName, chat
     return 0;
 
+def say():
+    text = response['result'][i]['message']['text']
+    if text.split("@",1)[0] == "/say":
+        pass
+    else:
+        s = text.split("@",1)[0].split(" ",1)[1]
+        sendMessage(token,a,None,s)
+
 def calBattery():
     dateToday = datetime.date.today()
     timeEnds = datetime.time(21,50,00)
@@ -93,7 +101,7 @@ def calBattery():
         return "{:.2%}".format(result)
     else:
         return "太医补魔中..."
-    return r;
+
 if __name__ == "__main__":
     token = sys.argv[1]
     offset = sys.argv[2]
@@ -149,6 +157,9 @@ if __name__ == "__main__":
                     elif t.split(" ",1)[0] == "/choice":
                         choice();
                         printLog('choice')
+                    elif t.split(" ",1)[0] == "/say":
+                        say();
+                        printLog('say')
                     else:
                         reply = random.choice(randReply);
                         sendMessage(token,a,b,reply)

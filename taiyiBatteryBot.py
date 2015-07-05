@@ -79,7 +79,8 @@ def printLog(requestName):
     content = response['result'][i]['message']['text']
     firstName = response['result'][i]['message']['from']['first_name']
     chat = response['result'] [i]['message']['chat']['id']
-    print datetime.datetime.now(), offset, firstName, content, chat
+    id = response['result'][i]['message']['from']['id']
+    print datetime.datetime.now(), offset, firstName, content, chat, id
     return 0;
 
 def say():

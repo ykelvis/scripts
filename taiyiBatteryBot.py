@@ -76,9 +76,10 @@ def choice():
     return 0
 
 def printLog(requestName):
+    content = response['result'][i]['message']['text']
     firstName = response['result'][i]['message']['from']['first_name']
     chat = response['result'] [i]['message']['chat']['id']
-    print datetime.datetime.now(), offset, firstName, requestName, chat
+    print datetime.datetime.now(), offset, firstName, content, chat
     return 0;
 
 def say():

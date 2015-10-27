@@ -7,4 +7,5 @@
 *.gif
 *.bmp
 *.webp
+*.pyc
 */

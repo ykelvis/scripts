@@ -21,9 +21,6 @@ def download_img(title,link,path):
     name = re.findall('(?<=/)\d+.jpg',link);
     save_path = unicode(path + "/" + title.decode('gbk'));
     file_path = save_path + "/" + name[0];
-    print name
-    print save_path
-    print file_path
     try:
         os.makedirs(path + "/" + title.decode('gbk'));
     except:
@@ -46,11 +43,11 @@ if __name__ == "__main__":
     all = open("lists.txt");
     for a in all:
         author = re.findall("(?<=\/\/).*(?=\.pp)",a)[0]
-        path = os.getcwd() + "/" + author;
-        test = pp163(author)
-        url_to_img = test.run()
+        path = os.getcwd() + "/" + "pp163" + "/" + author;
+        test = pp163(author);
+        url_to_img = test.run();
+        print "Downloading, " + author;
         for i in range(len(url_to_img)):
             title = url_to_img[i][0]
-            print title
             for j in range(1,len(url_to_img[i])):
                 download_img(title,url_to_img[i][j],path)

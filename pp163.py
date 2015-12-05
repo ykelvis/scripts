@@ -32,3 +32,6 @@ class pp163:
             _res = self.title + self.imgurl
             result.append(_res)
         return result
+
+#http://pp.163.com/shinken
+#http://pp.163.com/crimson2014

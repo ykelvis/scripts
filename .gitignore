@@ -1,4 +1,6 @@
 .DS_Store/
+*.ini
+*.db
 *.xlsx
 *.xls
 *.txt
@@ -9,3 +11,4 @@
 *.webp
 *.pyc
 */
+!/pyqt_toys

@@ -32,31 +32,15 @@ class MainW(QtGui.QWidget):
         self.mainlayout.addLayout(self.toplayout)
         self.setLayout(self.mainlayout)
 
-        self.connect(self.btn,QtCore.SIGNAL("clicked()"),self.get_json)
+        self.s_thread = sub_thread()
+        self.connect(self.btn,QtCore.SIGNAL("clicked()"),self.s_thread.start)
+        self.connect(self.s_thread,QtCore.SIGNAL("finished()"),self.add_button)
+    def button_event(self):
+        a = self.sender().text()
+        s = unicode(a)
+        print s
+        QtGui.QApplication.clipboard().setText(s)
 
-        self.get_json()
-
-
-    def get_json(self):
-        a = []
-        url = self.textedit.toPlainText()
-        if "http" in str(url).lower():
-            loaded = requests.request("GET", url).json()
-        else:
-            with open(url,"r") as f:
-                loaded = json.loads(f.read())
-                print("config loaded")
-        for i in range(len(loaded['categories'])):
-            for j in range(len(loaded['categories'][i]['entries'])):
-                if loaded['categories'][i]['name'].lower() == "huge":
-                    print("not loading")
-                else:
-                    z = loaded['categories'][i]['entries'][j]['emoticon']
-                    a.append(z)
-        print(a[1])
-        self.a = a
-        self.add_button()
-        return 0
     def add_button(self):
         self.buttonlayout = QtGui.QGridLayout()
         start = 0
@@ -72,11 +56,34 @@ class MainW(QtGui.QWidget):
             oneline = oneline + 1
         self.mainlayout.addLayout(self.buttonlayout)
 
-    def button_event(self):
-        a = self.sender().text()
-        s = unicode(a)
-        print s
-        QtGui.QApplication.clipboard().setText(s)
+class sub_thread(QtCore.QThread):
+    def __init__(self):
+        QtCore.QThread.__init__(self)
+
+    def run(self):
+        self.get_json()
+
+    def get_json(self):
+        a = []
+        url = ex.textedit.toPlainText()
+        if "http" in str(url).lower():
+            loaded = requests.request("GET", url).json()
+        else:
+            with open(url,"r") as f:
+                loaded = json.loads(f.read())
+                print("config loaded")
+        for i in range(len(loaded['categories'])):
+            for j in range(len(loaded['categories'][i]['entries'])):
+                if loaded['categories'][i]['name'].lower() == "huge":
+                    print("not loading")
+                else:
+                    z = loaded['categories'][i]['entries'][j]['emoticon']
+                    a.append(z)
+        print(a[1])
+        print(a)
+        ex.a = a
+
+
 
 class SystemTrayIcon(QtGui.QSystemTrayIcon):
     def __init__(self,icon,parent=None):

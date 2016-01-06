@@ -1,4 +1,6 @@
 .DS_Store/
+*.ico
+*.csv
 *.ini
 *.db
 *.xlsx

@@ -1,10 +1,7 @@
 #!/usr/local/bin/python3
 # coding=utf-8
 
-import telebot
-import logging
-import datetime
-import random
+import telebot, logging, datetime, random
 from telebot import types
 
 

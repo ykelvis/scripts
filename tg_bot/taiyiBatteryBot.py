@@ -1,95 +1,20 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 # coding=utf-8
-import os,random
-import sys
-import time
+
+import telebot
+import logging
 import datetime
-import json
-import requests
+import random
+from telebot import types
 
-def getMe(token):
-    response = requests.post(
-    url='https://api.telegram.org/bot' + token + "/" + method
-).json()
-    return response;
 
-def getUpdates(token,offset):
-    response = requests.post(
-        url='https://api.telegram.org/bot' + token + "/getUpdates",
-        data={'offset': offset}
-).json()
-    return response;
+logger = telebot.logger
+telebot.logger.setLevel(logging.DEBUG) # Outputs debug messages to console.
 
-def sendMessage(token,chat_id,message_id,text):
-    response = requests.post(
-        url='https://api.telegram.org/bot' + token + "/sendMessage",
-        data={'chat_id': chat_id,'reply_to_message_id': message_id, 'text': text}
-).json()
-    return response
+token = ""
 
-def sendPhoto(token,chat_id,message_id,img):
-    response = requests.post(
-        url='https://api.telegram.org/bot' + token + "/sendPhoto",
-        data={'chat_id': chat_id,'reply_to_message_id': message_id},
-        files={'photo': img},
-).json
-    return response
+bot = telebot.AsyncTeleBot(token)
 
-def getImg(folder):
-    a = [];
-    for f in os.listdir(folder):
-        if os.path.isfile(os.path.join(folder,f)):
-            a.append(f);
-    pic = random.choice(a);
-    picLoc = os.path.join(folder,pic)
-    img = open(picLoc,'rb')
-    print pic,
-    return img
-
-def getReplyIDs(js,index):
-    chat_id = js['result'][index]['message']['chat']['id']
-    message_id = js['result'][index]['message']['message_id']
-    return chat_id, message_id
-
-def dice():
-    text = response['result'][i]['message']['text']
-    try:
-        x,y,z = text.split(" ")
-        if int(y) < int(z):
-            text = random.randrange(int(y),int(z))
-            sendMessage(token,a,b,text)
-        else:
-            sendMessage(token,a,b,"（〃｀д´ )( ´ｪ`)")
-    except:
-        sendMessage(token,a,b,"/dice num1 num2\n//num1 < num2")
-
-def choice():
-    text = response['result'][i]['message']['text']
-    if text.split("@",1)[0] == "/choice":
-        reply = "/choice choice1 choice2 choice3 choice4 ..."
-        sendMessage(token,a,b,reply)
-    else:
-        arr = text.split(" ")
-        arr.pop(0)
-        text = random.choice(arr)
-        sendMessage(token,a,b,text)
-    return 0
-
-def printLog(requestName):
-    content = response['result'][i]['message']['text']
-    firstName = response['result'][i]['message']['from']['first_name']
-    chat = response['result'] [i]['message']['chat']['id']
-    id = response['result'][i]['message']['from']['id']
-    print datetime.datetime.now(), offset, firstName, content, chat, id
-    return 0;
-
-def say():
-    text = response['result'][i]['message']['text']
-    if text.split("@",1)[0] == "/say":
-        pass
-    else:
-        s = text.split("@",1)[0].split(" ",1)[1]
-        sendMessage(token,a,None,s)
 
 def calBattery():
     dateToday = datetime.date.today()
@@ -104,66 +29,70 @@ def calBattery():
     else:
         return "太医补魔中..."
 
-if __name__ == "__main__":
-    token = sys.argv[1]
-    offset = sys.argv[2]
-    folder = sys.argv[3]
-    offset_old = 0
-    rate = []
-    while True:
-        response = getUpdates(token,offset)
-        offset = response['result'][-1]['update_id']
-        randReply = ["🌚","🍼","GTMDFBK","GTMDSRR","GTMDYK","GTMDSORA","（〃｀д´ )( ´ｪ`)","辣鸡。","朕知道了。"]
-        if offset == offset_old:
-            pass;
-        else:
-            for i in range(1,len(response['result'])):
-                a,b = getReplyIDs(response,i)
-                res = response['result'][i]['message']
-                if res.has_key("text"):
-                    t = res['text'].split("@",1)[0]
-                    if t == "/batteryreport":
-                        text = calBattery()
-                        sendMessage(token,a,b,text)
-                        printLog("bat")
-                    elif t == "/leg":
-                        if a < 0:
-                            rate.append(time.time())
-                            if len(rate) > 5 and (rate[-1] - rate[0] > 600):
-                                rate = []
-                                img = getImg(folder)
-                                sendPhoto(token,a,b,img)
-                                printLog('leg')
-                            elif len(rate) <= 5:
-                                img = getImg(folder)
-                                sendPhoto(token,a,b,img)
-                                printLog('leg')
-                            else:
-                                sec = int(rate[-1] - rate[0])
-                                text = "（〃｀д´ )( ´ｪ`) wait, " + str(600 - sec) + " seconds..."
-                                #sendMessage(token,a,b,text)
-                                print text
-                        else:
-                            img = getImg(folder)
-                            sendPhoto(token,a,b,img)
-                            print "sent photo",
-                            printLog('leg')
+@bot.inline_handler(lambda query: query.query == '')
+def query_battery(inline_query):
+    try:
+        c = "taiyi: {}".format(calBattery())
+        r = types.InlineQueryResultArticle('1', c, c)
+        bot.answer_inline_query(inline_query.id, [r],cache_time=10)
+    except Exception as e:
+        print(e)
 
-                    elif t == "/crossdressfubuki":
-                        sendMessage(token,a,b,"🌚")
-                        printLog('cross')
-                    elif t.split(" ",1)[0] == "/dice":
-                        dice();
-                        printLog('dice')
-                    elif t.split(" ",1)[0] == "/choice":
-                        choice();
-                        printLog('choice')
-                    elif t.split(" ",1)[0] == "/say":
-                        say();
-                        printLog('say')
-                    else:
-                        reply = random.choice(randReply);
-                        sendMessage(token,a,b,reply)
-                        printLog('whadafu!?')
-        offset_old = offset 
-        time.sleep(1);
+@bot.message_handler(commands=['taiyi'])
+def taiyi(message):
+    m = calBattery()
+    bot.reply_to(message, m)
+
+@bot.message_handler(commands=['dice'])
+def dice(message):
+    try:
+        x,y = message.text.split(" ")[1].split(",")
+        a,b = int(x),int(y)
+        if a < b:
+            b = b + 1
+            r = random.randrange(a,b)
+            bot.reply_to(message,r)
+        else:
+            bot.reply_to(message,"invalid")
+    except:
+        bot.reply_to(message,"usage: /dice 1,6")
+
+@bot.message_handler(commands=['choice'])
+def choice(message):
+    try:
+        a = message.text.split(" ")[1].split(",")
+        r = random.choice(a)
+        bot.reply_to(message,r)
+    except:
+        bot.reply_to(message,"usage: /choice c1,c2,c3")
+
+@bot.message_handler(commands=['say'])
+def say(message):
+    try:
+        x,y = message.text.split(" ")
+        bot.reply_to(message,y)
+    except:
+        bot.reply_to(message,"usage: /say blabla")
+
+@bot.message_handler(commands=['pm25'])
+def pm25(message):
+    from bs4 import BeautifulSoup as bs
+    import requests
+    try:
+        x,y = message.text.split(" ")
+        res = requests.get("http://www.stateair.net/web/rss/1/1.xml")
+        res = bs(res,"lxml")
+        print(res)
+        r = res.findAll('item')[0]
+        bot.reply_to(message,r)
+    except:
+        bot.reply_to(message,"usage: /pm25")
+
+
+@bot.message_handler(commands=['test'])
+def test(message):
+    bot.reply_to(message,"message text is {}".format(message.text))
+    bot.reply_to(message,"message id is {}".format(message.message_id))
+    bot.reply_to(message,"chat id is {}".format(message.chat.id))
+
+bot.polling()

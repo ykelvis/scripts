@@ -1,14 +1,14 @@
 #!/usr/local/bin/python3
 # coding=utf-8
 
-import telebot, logging, datetime, random
+import telebot, logging, datetime, random, sys
 from telebot import types
 
 
 logger = telebot.logger
 telebot.logger.setLevel(logging.DEBUG) # Outputs debug messages to console.
 
-token = ""
+token = sys.argv[1]
 
 bot = telebot.AsyncTeleBot(token)
 
@@ -22,14 +22,14 @@ def calBattery():
     batteryNow = datetime.datetime.now()
     result = float((batteryEnds - batteryNow).total_seconds())/float((batteryEnds - batteryStarts).total_seconds())
     if result < 1 and result > 0: 
-        return "{:.2%}".format(result)
+        return "太医电量剩余: {:.2%}".format(result)
     else:
         return "太医补魔中..."
 
 @bot.inline_handler(lambda query: query.query == '')
 def query_battery(inline_query):
     try:
-        c = "taiyi: {}".format(calBattery())
+        c = calBattery()
         r = types.InlineQueryResultArticle('1', c, c)
         bot.answer_inline_query(inline_query.id, [r],cache_time=10)
     except Exception as e:

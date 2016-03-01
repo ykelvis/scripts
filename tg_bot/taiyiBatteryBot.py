@@ -12,7 +12,6 @@ token = sys.argv[1]
 
 bot = telebot.AsyncTeleBot(token)
 
-
 def calBattery():
     dateToday = datetime.date.today()
     timeEnds = datetime.time(21,50,00)

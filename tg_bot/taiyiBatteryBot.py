@@ -34,6 +34,14 @@ def query_battery(inline_query):
     except Exception as e:
         print(e)
 
+@bot.inline_handler(lambda query: query.query == 'agent')
+def query_battery(inline_query):
+    try:
+        r = types.InlineQueryResultArticle('特工剩余电量：+∞', c, c)
+        bot.answer_inline_query(inline_query.id, [r],cache_time=10)
+    except Exception as e:
+        print(e)
+
 @bot.message_handler(commands=['taiyi'])
 def taiyi(message):
     m = calBattery()

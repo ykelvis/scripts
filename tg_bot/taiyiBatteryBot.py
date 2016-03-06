@@ -30,7 +30,7 @@ def query_battery(inline_query):
     try:
         c = calBattery()
         r = types.InlineQueryResultArticle('taiyi', c, c)
-        r2 = types.InlineQueryResultArticle('agent','特工剩余电量：+∞', '特工剩余电量：+∞')
+        r2 = types.InlineQueryResultArticle('agent','特工电量剩余：+∞', '特工电量剩余：+∞')
         bot.answer_inline_query(inline_query.id, [r,r2],cache_time=10)
     except Exception as e:
         print(e)

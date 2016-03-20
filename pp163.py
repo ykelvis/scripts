@@ -1,5 +1,4 @@
 #!/usr/local/bin/python3
-
 import requests, re
 from core import download_pics
 

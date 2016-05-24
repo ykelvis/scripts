@@ -1,16 +1,13 @@
 #!/usr/local/bin/python3
 # coding=utf-8
-
 import telebot, logging, datetime, random, sys
 from telebot import types
 
-
 logger = telebot.logger
 telebot.logger.setLevel(logging.DEBUG) # Outputs debug messages to console.
-
 token = sys.argv[1]
-
 bot = telebot.AsyncTeleBot(token)
+strip = lambda a:a.lstrip(a.split()[0]).lstrip().rstrip()
 
 def calBattery():
     dateToday = datetime.date.today()
@@ -23,15 +20,23 @@ def calBattery():
     if result < 1 and result > 0: 
         return "太医电量剩余: {:.2%}".format(result)
     else:
-        return "太医补魔中..."
+        return "太医补魔中"
 
 @bot.inline_handler(lambda query: query.query == '')
 def query_battery(inline_query):
     try:
+        emoji = ['( ´_ゝ`)','（〃｀д´ )( ´ｪ`)','（〃｀д´ ) 🍼','（〃｀д´ ) ☔️','( ･ั﹏･ั )','( ´∀｀ )','( ﾟдﾟ )','(・Д・)ノ','(^o^)丿','(๑´•.̫ • `๑)','(゜-゜)','(｡ŏ﹏ŏ)','（ ・∀・）','✌(´◓ｑ◔｀)✌﻿','_:(´ཀ`」 ∠):_','（￣へ￣）','(｡•ˇ‸ˇ•｡)﻿','(　д ) ﾟ ﾟ','((((；ﾟДﾟ)))))))','(ﾟДﾟ≡ﾟДﾟ)','Σ(っ°Д°;)っ',' ༼ つ ◕_◕ ༽つ','(;´༎ຶД༎ຶ`)','｡･ﾟ･(ﾉД`)･ﾟ･｡','ヽ(；▽；)ノ','_(:3」 ∠)_','( ´◔ ‸◔`)﻿','╮( ๑╹,◡╹ ๑ ) ╭','(つд⊂)','( ´∀`)σ)Д` )','(╯°Д°)╯','( ͡° ͜ʖ ͡° )','¯\_(ツ)_/¯']
         c = calBattery()
-        r = types.InlineQueryResultArticle('taiyi', c, c)
+        a = random.choice(emoji)
+        c = c + ' ' + str(a)
+        r1 = types.InlineQueryResultArticle('taiyi', c, c)
         r2 = types.InlineQueryResultArticle('agent','特工电量剩余：+∞', '特工电量剩余：+∞')
-        bot.answer_inline_query(inline_query.id, [r,r2],cache_time=10)
+        r = [r1,r2]
+        j = 0
+        for i in emoji:
+            r.append(types.InlineQueryResultArticle(str(j),i,i))
+            j+=1
+        bot.answer_inline_query(inline_query.id, r,cache_time=5)
     except Exception as e:
         print(e)
 
@@ -40,10 +45,17 @@ def taiyi(message):
     m = calBattery()
     bot.reply_to(message, m)
 
+@bot.message_handler(commands=['roll'])
+def roll(message):
+    a = random.randrange(1,100)
+    bot.reply_to(message,a)
+
 @bot.message_handler(commands=['dice'])
 def dice(message):
+    text = strip(message.text)
     try:
-        x,y = message.text.split(" ")[1].split(",")
+        text = text.replace(" ","")
+        x,y = text.split(",")
         a,b = int(x),int(y)
         if a < b:
             b = b + 1
@@ -56,8 +68,9 @@ def dice(message):
 
 @bot.message_handler(commands=['choice'])
 def choice(message):
+    text = strip(message.text)
     try:
-        a = message.text.split(" ")[1].split(",")
+        a = text.split(",")
         r = random.choice(a)
         bot.reply_to(message,r)
     except:
@@ -71,25 +84,29 @@ def say(message):
     except:
         bot.reply_to(message,"usage: /say blabla")
 
-@bot.message_handler(commands=['pm25'])
-def pm25(message):
-    from bs4 import BeautifulSoup as bs
-    import requests
-    try:
-        x,y = message.text.split(" ")
-        res = requests.get("http://www.stateair.net/web/rss/1/1.xml")
-        res = bs(res,"lxml")
-        print(res)
-        r = res.findAll('item')[0]
-        bot.reply_to(message,r)
-    except:
-        bot.reply_to(message,"usage: /pm25")
-
+@bot.message_handler(commands=['rollit'])
+def roll(message):
+    text = strip(message.text)
+    choice = list(set(text.split(",")))
+    print(choice)
+    r,res,winner = {},[],[]
+    for i in choice:
+        if i != '':
+            name = i.strip()
+            dice = random.choice(range(1,101))
+            r[name] = dice
+    values = list(r.values()).count(max(list(r.values())))
+    for k,v in r.items():
+        res.append("{} rolled: {}".format(k,v))
+    r_sort = sorted(r.items(), key=lambda d: d[1],reverse=True)
+    for i in range(values):
+        winner.append("winner is {}: {}".format(r_sort[i][0],r_sort[i][1]))
+    res = "\n".join(res) + "\n\n" + "\n".join(winner)
+    bot.reply_to(message,res)
 
 @bot.message_handler(commands=['test'])
 def test(message):
-    bot.reply_to(message,"message text is {}".format(message.text))
-    bot.reply_to(message,"message id is {}".format(message.message_id))
-    bot.reply_to(message,"chat id is {}".format(message.chat.id))
+    text = strip(message.text)
+    bot.reply_to(message,text)
 
 bot.polling()

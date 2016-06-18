@@ -17,7 +17,7 @@ def calBattery():
         return "太医补魔中"
     else:
         diff = secnow - timestart
-        bat = 46200 - diff * diff / 46200
+        bat = (46200 - diff * diff / 46200) / 46200
         return "太医电量剩余: {:.2%}".format(bat)
 
 @bot.inline_handler(lambda query: query.query == '')

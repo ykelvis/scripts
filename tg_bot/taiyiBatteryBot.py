@@ -1,6 +1,6 @@
 #!/usr/local/bin/python3
 # coding=utf-8
-import telebot, logging, datetime, random, sys
+import telebot, logging, datetime, random, sys, time
 from telebot import types
 
 logger = telebot.logger
@@ -10,17 +10,15 @@ bot = telebot.AsyncTeleBot(token)
 strip = lambda a:a.lstrip(a.split()[0]).lstrip().rstrip()
 
 def calBattery():
-    dateToday = datetime.date.today()
-    timeEnds = datetime.time(21,50,00)
-    timeStarts = datetime.time(9,00,00)
-    batteryStarts = datetime.datetime.combine(dateToday,timeStarts)
-    batteryEnds = datetime.datetime.combine(dateToday,timeEnds)
-    batteryNow = datetime.datetime.now()
-    result = float((batteryEnds - batteryNow).total_seconds())/float((batteryEnds - batteryStarts).total_seconds())
-    if result < 1 and result > 0: 
-        return "太医电量剩余: {:.2%}".format(result)
-    else:
+    timeend = 78600
+    timestart = 32400
+    secnow = (time.time().__int__() - time.timezone) % 86400
+    if secnow < timestart or secnow > timeend: 
         return "太医补魔中"
+    else:
+        diff = secnow - timestarts
+        bat = 46200 - diff * diff / 46200
+        return "太医电量剩余: {:.2%}".format(bat)
 
 @bot.inline_handler(lambda query: query.query == '')
 def query_battery(inline_query):

@@ -29,7 +29,7 @@ def query_charge(inline_query):
     hour = (timeend / 3600).__int__()
     minute = (timeend % 3600 / 60).__int__()
     second = (timeend % 3600 % 60).__int__()
-    text = '续1s, 太医没电时间: {}:{}:{}'.format(hour,minute,second)
+    text = '续1s, 太医没电时间: {:02}:{:02}:{:02}'.format(hour,minute,second)
     r1 = types.InlineQueryResultArticle('taiyi', text, text)
     bot.answer_inline_query(inline_query.id, [r1],cache_time=1)
 

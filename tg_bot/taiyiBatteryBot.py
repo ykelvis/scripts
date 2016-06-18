@@ -16,7 +16,7 @@ def calBattery():
     if secnow < timestart or secnow > timeend: 
         return "太医补魔中"
     else:
-        diff = secnow - timestarts
+        diff = secnow - timestart
         bat = 46200 - diff * diff / 46200
         return "太医电量剩余: {:.2%}".format(bat)
 

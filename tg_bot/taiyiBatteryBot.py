@@ -9,9 +9,11 @@ token = sys.argv[1]
 bot = telebot.AsyncTeleBot(token)
 strip = lambda a:a.lstrip(a.split()[0]).lstrip().rstrip()
 
+timeend = 78600
+timestart = 32400
+
 def calBattery():
-    timeend = 78600
-    timestart = 32400
+    global timeend,timesatart
     secnow = (time.time().__int__() - time.timezone) % 86400
     if secnow < timestart or secnow > timeend: 
         return "太医补魔中"
@@ -19,6 +21,14 @@ def calBattery():
         diff = secnow - timestart
         bat = (46200 - diff * diff / 46200) / 46200
         return "太医电量剩余: {:.2%}".format(bat)
+
+@bot.inline_handler(lambda query: query.query == '+1s')
+def query_charge(inline_query):
+    global timeend
+    timeend +=1
+    text = '续1s, 太医没电时间: {}'.format(timeend)
+    r1 = types.InlineQueryResultArticle('taiyi', text, text)
+    bot.answer_inline_query(inline_query.id, [r1],cache_time=1)
 
 @bot.inline_handler(lambda query: query.query == '')
 def query_battery(inline_query):

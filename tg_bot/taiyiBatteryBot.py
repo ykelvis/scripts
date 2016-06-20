@@ -14,12 +14,13 @@ timestart = 32400
 
 def calBattery():
     global timeend,timesatart
+    d = timeend - timestart
     secnow = (time.time().__int__() - time.timezone) % 86400
     if secnow < timestart or secnow > timeend: 
         return "太医补魔中"
     else:
         diff = secnow - timestart
-        bat = (46200 - diff * diff / 46200) / 46200
+        bat = (d - diff * diff / d) / d
         return "太医电量剩余: {:.2%}".format(bat)
 
 @bot.inline_handler(lambda query: query.query == '+1s')

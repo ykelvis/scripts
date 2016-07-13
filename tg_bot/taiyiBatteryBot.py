@@ -59,7 +59,7 @@ def taiyi(message):
 
 @bot.message_handler(commands=['roll'])
 def roll(message):
-    a = random.randrange(1,100)
+    a = random.randrange(1,101)
     bot.reply_to(message,a)
 
 @bot.message_handler(commands=['dice'])
@@ -95,26 +95,6 @@ def say(message):
         bot.reply_to(message,y)
     except:
         bot.reply_to(message,"usage: /say blabla")
-
-@bot.message_handler(commands=['rollit'])
-def roll(message):
-    text = strip(message.text)
-    choice = list(set(text.split(",")))
-    print(choice)
-    r,res,winner = {},[],[]
-    for i in choice:
-        if i != '':
-            name = i.strip()
-            dice = random.choice(range(1,101))
-            r[name] = dice
-    values = list(r.values()).count(max(list(r.values())))
-    for k,v in r.items():
-        res.append("{} rolled: {}".format(k,v))
-    r_sort = sorted(r.items(), key=lambda d: d[1],reverse=True)
-    for i in range(values):
-        winner.append("winner is {}: {}".format(r_sort[i][0],r_sort[i][1]))
-    res = "\n".join(res) + "\n\n" + "\n".join(winner)
-    bot.reply_to(message,res)
 
 @bot.message_handler(commands=['test'])
 def test(message):

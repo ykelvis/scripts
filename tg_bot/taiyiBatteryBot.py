@@ -38,32 +38,37 @@ def calBattery():
         bat = (d - diff * diff / d) / d
         return "太医电量剩余: {:.2%}".format(bat)
 
-def query_charge(inline_query):
+def inline_charge():
     global timeend
     timeend +=1
     hour = (timeend / 3600).__int__()
     minute = (timeend % 3600 / 60).__int__()
     second = (timeend % 3600 % 60).__int__()
     text = '续1s, 太医没电时间: {:02}:{:02}:{:02}'.format(hour,minute,second)
-    r1 = types.InlineQueryResultArticle('taiyi', text, text)
-    bot.answer_inline_query(inline_query.id, [r1],cache_time=1)
+    return text
 
 def inline_battery(bot,update):
     global emoji
     query = update.inline_query.query
     results = list()
     logging.info('inline {} from {}'.format('no content' if update.inline_query.query == '' else update.inline_query.query,update.inline_query.from_user.username))
-    try:
-        c = calBattery()
-        a = random.choice(emoji)
-        c = c + ' ' + str(a)
-        results.append(InlineQueryResultArticle(id=uuid4(),title=c,input_message_content=InputTextMessageContent(c)))
-        results.append(InlineQueryResultArticle(id=uuid4(),title='特工电量剩余：+∞',input_message_content=InputTextMessageContent('特工电量剩余：+∞')))
-        [results.append(InlineQueryResultArticle(id=uuid4(),title=x,input_message_content=InputTextMessageContent(x))) for x in emoji]
-        bot.answerInlineQuery(update.inline_query.id, results=results,cache_time=5)
-        logging.info('return succ, {}'.format(c))
-    except Exception as e:
-        print(e)
+    if update.inline_query.query == '+1s':
+        ret = inline_charge()
+        results = [InlineQueryResultArticle(id=1,title=ret,input_message_content=InputTextMessageContent(ret))]
+        bot.answerInlineQuery(update.inline_query.id, results=results, cache_time=1)
+    else:
+        try:
+            c = calBattery()
+            a = random.choice(emoji)
+            c = c + ' ' + str(a)
+            results.append(InlineQueryResultArticle(id=uuid4(),title=c,input_message_content=InputTextMessageContent(c)))
+            results.append(InlineQueryResultArticle(id=uuid4(),title='特工电量剩余：+∞',input_message_content=InputTextMessageContent('特工电量剩余：+∞')))
+            [results.append(InlineQueryResultArticle(id=uuid4(),title=x,input_message_content=InputTextMessageContent(x))) for x in emoji]
+            bot.answerInlineQuery(update.inline_query.id, results=results,cache_time=5)
+            logging.info('return succ, {}'.format(c))
+        except Exception as e:
+            print(e)
+
 
 @wrapper(disable_preview=True,parse_mode=None,reply_to=True)
 def taiyi(bot,update):

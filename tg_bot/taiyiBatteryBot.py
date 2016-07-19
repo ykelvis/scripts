@@ -56,6 +56,14 @@ def inline_battery(bot,update):
         ret = inline_charge()
         results = [InlineQueryResultArticle(id=1,title=ret,input_message_content=InputTextMessageContent(ret))]
         bot.answerInlineQuery(update.inline_query.id, results=results, cache_time=1)
+    elif update.inlin_query.query != '':
+        q = update.inline_query.query
+        ret = ''
+        c = [' ','']
+        for i in q:
+            ret = ret + i + random.choice(c)
+        results.append(InlineQueryResultArticle(id=1,title=ret,input_message_content=InputTextMessageContent(ret)))
+        bot.answerInlineQuery(update.inline_query.id, results=results,cache_time=1)
     else:
         try:
             c = calBattery()

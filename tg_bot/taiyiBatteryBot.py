@@ -62,7 +62,7 @@ def inline_battery(bot,update):
         c = [' ','']
         for i in q:
             ret = ret + i + random.choice(c)
-        logging.info('return: {}'.format(ret))
+        logger.info('return: {}'.format(ret))
         results.append(InlineQueryResultArticle(id=1,title=ret,input_message_content=InputTextMessageContent(ret)))
         bot.answerInlineQuery(update.inline_query.id, results=results,cache_time=1)
     else:

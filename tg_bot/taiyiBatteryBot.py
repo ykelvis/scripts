@@ -1,14 +1,12 @@
 #!/usr/local/bin/python3
 # coding=utf-8
 import logging
-import sqlite3
-import json
 import sys
 import random
 import time
 from uuid import uuid4
 from telegram.ext import Updater, CommandHandler, InlineQueryHandler
-from telegram import ParseMode, InlineQueryResultArticle, InputTextMessageContent
+from telegram import InlineQueryResultArticle, InputTextMessageContent
 
 logging.basicConfig(
     level=logging.INFO,
@@ -109,9 +107,9 @@ def inline_battery(bot, update):
     logging.info(
         'inline {} from {}'.format(
             'no content'
-            if update.inline_query.query == '' else update.inline_query.query,
+            if query == '' else query,
             update.inline_query.from_user.username))
-    if update.inline_query.query == '+1s':
+    if query == '+1s':
         ret = inline_charge()
         results = [
             InlineQueryResultArticle(
@@ -122,8 +120,8 @@ def inline_battery(bot, update):
             update.inline_query.id,
             results=results,
             cache_time=1)
-    elif update.inline_query.query != '':
-        q = update.inline_query.query
+    elif query != '':
+        q = query
         ret = ''
         c = [' ', '']
         for i in q:

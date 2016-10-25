@@ -218,8 +218,7 @@ def say(bot, update):
 
 @wrapper(disable_preview=True, parse_mode=None, reply_to=True)
 def test(bot, update):
-    text = update.message.text
-    return text
+    return str(update)
 
 
 def main(token):
@@ -235,7 +234,9 @@ def main(token):
 
     dp.add_handler(InlineQueryHandler(inline_battery))
 
-    updater.start_polling()
+    #updater.start_polling()
+    updater.start_webhook(listen="127.0.0.1",port=15000,url_path='taiyi')
+    updater.bot.setWebhook("https://tg.libyk.so/taiyi")
     updater.idle()
 
 if __name__ == "__main__":

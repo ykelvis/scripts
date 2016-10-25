@@ -221,7 +221,7 @@ def test(bot, update):
     return str(update)
 
 
-def main(token):
+def main(token, url, path):
     TOKEN = token
     updater = Updater(TOKEN)
     dp = updater.dispatcher
@@ -235,10 +235,12 @@ def main(token):
     dp.add_handler(InlineQueryHandler(inline_battery))
 
     #updater.start_polling()
-    updater.start_webhook(listen="127.0.0.1",port=15000,url_path='taiyi')
-    updater.bot.setWebhook("https://tg.libyk.so/taiyi")
+    updater.start_webhook(listen="127.0.0.1",port=15000,url_path=path)
+    updater.bot.setWebhook("https://{}/{}".format(url, path))
     updater.idle()
 
 if __name__ == "__main__":
     t = sys.argv[1]
-    main(t)
+    url = sys.argv[2]
+    path = sys.argv[3]
+    main(t, url, path)

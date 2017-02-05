@@ -110,7 +110,7 @@ def time_to_next_0530():
         hour = 0
         minute = 0
         sec = 0
-    return "距离下次0530还剩: {}:{}:{}".format(hour, minute, sec)
+    return "距离下次0530还剩: {:02}:{:02}:{:02}".format(hour, minute, sec)
 
 
 def inline_charge():

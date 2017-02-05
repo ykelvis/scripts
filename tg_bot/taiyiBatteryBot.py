@@ -134,10 +134,8 @@ def inline_battery(bot, update):
             update.inline_query.from_user.username))
     if query == '':
         try:
-            c = calBattery()
-            d = time_to_next_0530()
-            a = random.choice(emoji)
-            c = c + ' ' + str(a)
+            c = calBattery() + ' ' + str(random.choice(emoji))
+            d = time_to_next_0530() + ' ' + str(random.choice(emoji))
             logging.info('battery now {}'.format(c))
             results.append(
                 InlineQueryResultArticle(

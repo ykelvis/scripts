@@ -131,38 +131,12 @@ def inline_battery(bot, update):
             'no content'
             if query == '' else query,
             update.inline_query.from_user.username))
-    if query == '+1s':
-        ret = inline_charge()
-        results = [
-            InlineQueryResultArticle(
-                id=1,
-                title=ret,
-                input_message_content=InputTextMessageContent(ret))]
-        bot.answerInlineQuery(
-            update.inline_query.id,
-            results=results,
-            cache_time=1)
-    elif query != '':
-        q = query
-        ret = ''
-        c = [' ', '']
-        for i in q:
-            ret = ret + i + random.choice(c)
-        logger.info('return: {}'.format(ret))
-        results.append(
-            InlineQueryResultArticle(
-                id=1,
-                title=ret,
-                input_message_content=InputTextMessageContent(ret)))
-        bot.answerInlineQuery(
-            update.inline_query.id,
-            results=results,
-            cache_time=1)
-    else:
+    if query == '':
         try:
             c = calBattery()
             a = random.choice(emoji)
             c = c + ' ' + str(a)
+            logging.info('battery now {}'.format(c))
             results.append(
                 InlineQueryResultArticle(
                     id=uuid4(),
@@ -178,6 +152,7 @@ def inline_battery(bot, update):
                  InlineQueryResultArticle(id=uuid4(), title=x,
                                           input_message_content=InputTextMessageContent(x)))
              for x in emoji]
+            logging.info('battery now {}'.format(c))
             bot.answerInlineQuery(
                 update.inline_query.id,
                 results=results,
@@ -185,6 +160,33 @@ def inline_battery(bot, update):
             logging.info('return succ, {}'.format(c))
         except Exception as e:
             print(e)
+    elif query == '+1s':
+        ret = inline_charge()
+        results = [
+            InlineQueryResultArticle(
+                id=1,
+                title=ret,
+                input_message_content=InputTextMessageContent(ret))]
+        bot.answerInlineQuery(
+            update.inline_query.id,
+            results=results,
+            cache_time=1)
+    else:
+        q = query
+        ret = ''
+        c = [' ', '']
+        for i in q:
+            ret = ret + i + random.choice(c)
+        logger.info('return: {}'.format(ret))
+        results.append(
+            InlineQueryResultArticle(
+                id=1,
+                title=ret,
+                input_message_content=InputTextMessageContent(ret)))
+        bot.answerInlineQuery(
+            update.inline_query.id,
+            results=results,
+            cache_time=1)
 
 
 @wrapper(disable_preview=True, parse_mode=None, reply_to=True)
@@ -238,11 +240,10 @@ def say(bot, update):
 
 @wrapper(disable_preview=True, parse_mode=None, reply_to=True)
 def test(bot, update):
-    text = update.message.text
-    return text
+    return str(update)
 
 
-def main(token):
+def main(token, url, path):
     TOKEN = token
     updater = Updater(TOKEN)
     dp = updater.dispatcher
@@ -255,9 +256,13 @@ def main(token):
 
     dp.add_handler(InlineQueryHandler(inline_battery))
 
-    updater.start_polling()
+    #updater.start_polling()
+    updater.start_webhook(listen="127.0.0.1",port=15000,url_path=path)
+    updater.bot.setWebhook("https://{}/{}".format(url, path))
     updater.idle()
 
 if __name__ == "__main__":
     t = sys.argv[1]
-    main(t)
+    url = sys.argv[2]
+    path = sys.argv[3]
+    main(t, url, path)

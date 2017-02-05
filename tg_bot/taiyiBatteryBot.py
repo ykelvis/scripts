@@ -89,6 +89,28 @@ def calBattery():
         bat = (d - diff * diff / d) / d
         return "太医电量剩余: {:.2%}".format(bat)
 
+def time_to_next_0530():
+    curr = (time.time().__int__() - time.timezone) % 86400
+    if curr > 19800:
+        ret = 86400 - curr + 19800
+        result = divmod(ret, 60)
+        hour = result[0] // 60
+        minute = result[0] % 60
+        sec = result[1]
+    elif curr < 19800:
+        ret = 19800 - curr 
+        result = divmod(ret, 60)
+        hour = result[0] // 60
+        minute = result[0] % 60
+        sec = result[1]
+    else:
+        hour = 0
+        minute = 0
+        sec = 0
+    return "距离下次0530还剩: {}:{}:{}".format()
+
+
+
 
 def inline_charge():
     global timeend

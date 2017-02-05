@@ -1,12 +1,17 @@
 #!/usr/local/bin/python3
 # coding=utf-8
+import os
+import re
 import logging
 import sys
 import random
 import time
+import requests
 from uuid import uuid4
-from telegram.ext import Updater, CommandHandler, InlineQueryHandler
-from telegram import InlineQueryResultArticle, InputTextMessageContent
+from telegram.ext import Updater, CommandHandler, InlineQueryHandler, Filters, MessageHandler
+from telegram import InlineQueryResultArticle, InputTextMessageContent, ParseMode
+from roll import *
+from currency import *
 
 logging.basicConfig(
     level=logging.INFO,
@@ -93,23 +98,19 @@ def time_to_next_0530():
     curr = (time.time().__int__() - time.timezone) % 86400
     if curr > 19800:
         ret = 86400 - curr + 19800
-        result = divmod(ret, 60)
-        hour = result[0] // 60
-        minute = result[0] % 60
-        sec = result[1]
+        result, sec = divmod(ret, 60)
+        hour = result // 60
+        minute = result % 60
     elif curr < 19800:
         ret = 19800 - curr 
-        result = divmod(ret, 60)
-        hour = result[0] // 60
-        minute = result[0] % 60
-        sec = result[1]
+        result, sec = divmod(ret, 60)
+        hour = result // 60
+        minute = result % 60
     else:
         hour = 0
         minute = 0
         sec = 0
-    return "距离下次0530还剩: {}:{}:{}".format()
-
-
+    return "距离下次0530还剩: {}:{}:{}".format(hour, minute, sec)
 
 
 def inline_charge():
@@ -134,6 +135,7 @@ def inline_battery(bot, update):
     if query == '':
         try:
             c = calBattery()
+            d = time_to_next_0530()
             a = random.choice(emoji)
             c = c + ' ' + str(a)
             logging.info('battery now {}'.format(c))
@@ -142,6 +144,11 @@ def inline_battery(bot, update):
                     id=uuid4(),
                     title=c,
                     input_message_content=InputTextMessageContent(c)))
+            results.append(
+                InlineQueryResultArticle(
+                    id=uuid4(),
+                    title=d,
+                    input_message_content=InputTextMessageContent(d)))
             results.append(
                 InlineQueryResultArticle(
                     id=uuid4(),
@@ -167,6 +174,32 @@ def inline_battery(bot, update):
                 id=1,
                 title=ret,
                 input_message_content=InputTextMessageContent(ret))]
+        bot.answerInlineQuery(
+            update.inline_query.id,
+            results=results,
+            cache_time=1)
+    elif query.startswith('kuro'):
+        query = query.replace('kuro', '').replace(" ","")
+        if query == '':
+            return 0
+        _ret = requests.get("https://utils.libyk.so/kurorekishi/keyword/" + query, proxies=None).text
+        try:
+            _ret = json.loads(_ret)
+            ret = {}
+            if _ret['results'] == []:
+                ret[1] = "nothing found"
+            else:
+                j = 1
+                for i in _ret['results']:
+                    ret[j] = i['text']
+                    j += 1
+        except:
+            ret = {1: "json parse error"}
+        results = [
+            InlineQueryResultArticle(
+                id=k,
+                title=v,
+                input_message_content=InputTextMessageContent(v)) for k,v in ret.items()]
         bot.answerInlineQuery(
             update.inline_query.id,
             results=results,
@@ -242,6 +275,62 @@ def say(bot, update):
 def test(bot, update):
     return str(update)
 
+def logg(bot, update):
+    update.message.reply_text(update.message.text)
+
+@wrapper(disable_preview=True, parse_mode=ParseMode.MARKDOWN, reply_to=True)
+def rollstart(bot, update):
+    return startroll(update)
+
+
+@wrapper(disable_preview=True, parse_mode=ParseMode.MARKDOWN, reply_to=True)
+def rolljoin(bot, update):
+    return joinroll(update)
+
+
+@wrapper(disable_preview=True, parse_mode=ParseMode.MARKDOWN, reply_to=False)
+def rollquit(bot, update):
+    return quitroll(update)
+
+
+@wrapper(disable_preview=True, parse_mode=ParseMode.MARKDOWN, reply_to=False)
+def rolllists(bot, update):
+    return listsroll(update)
+
+
+@wrapper(disable_preview=True, parse_mode=ParseMode.MARKDOWN, reply_to=False)
+def rollnow(bot, update):
+    return nowroll(update)
+
+
+@wrapper(disable_preview=True, parse_mode=ParseMode.MARKDOWN, reply_to=True)
+def rollkick(bot, update):
+    return kickroll(update)
+
+@wrapper(disable_preview=True, parse_mode=None, reply_to=False)
+def kuro(bot, update):
+    chanid = update.message.chat.id
+    if chanid != -961315:
+        return 'hello'
+    ret = requests.get("https://utils.libyk.so/kurorekishi/random", proxies=None).text
+    try:
+        ret = json.loads(ret)
+        return ret['text']
+    except:
+        return "json parse error"
+
+@wrapper(disable_preview=True, parse_mode=None, reply_to=False)
+def curr(bot, update):
+    chanid = update.message.chat.id
+    text = strip(update.message.text)
+    command = re.match('(\d+)\s+?(\w+)\s+(?:to)\s+(\w+)', text)
+    if not command:
+        return "Bad request."
+    try:
+        amount = int(command.group(1))
+        return get_currency(command.group(2), command.group(3), amount)
+    except:
+        return "Bad request."
 
 def main(token, url, path):
     TOKEN = token
@@ -254,15 +343,26 @@ def main(token, url, path):
     dp.add_handler(CommandHandler('dice', dice))
     dp.add_handler(CommandHandler('test', test))
 
+    dp.add_handler(CommandHandler('rollstart', rollstart))
+    dp.add_handler(CommandHandler('rolljoin', rolljoin))
+    dp.add_handler(CommandHandler('rolllists', rolllists))
+    dp.add_handler(CommandHandler('rollnow', rollnow))
+    dp.add_handler(CommandHandler('rollquit', rollquit))
+    dp.add_handler(CommandHandler('rollkick', rollkick))
+
+    dp.add_handler(CommandHandler('currency', curr))
+    dp.add_handler(CommandHandler('kuro', kuro))
+
     dp.add_handler(InlineQueryHandler(inline_battery))
+    # dp.add_handler(MessageHandler(Filters.text, logg))
 
     #updater.start_polling()
-    updater.start_webhook(listen="127.0.0.1",port=15000,url_path=path)
+    updater.start_webhook(listen="0.0.0.0",port=15000,url_path=path)
     updater.bot.setWebhook("https://{}/{}".format(url, path))
     updater.idle()
 
 if __name__ == "__main__":
-    t = sys.argv[1]
-    url = sys.argv[2]
-    path = sys.argv[3]
+    t = os.getenv('TG_TOKEN')
+    url = os.getenv('TG_URL')
+    path = os.getenv('TG_PATH')
     main(t, url, path)

@@ -94,15 +94,16 @@ def calBattery():
         bat = (d - diff * diff / d) / d
         return "太医电量剩余: {:.2%}".format(bat)
 
-def time_to_next_0530():
+def count_down(ts):
+    starter = int(ts[0:2]) * 3600 + int(ts[2:4]) * 60 + int(ts[4:6])
     curr = (time.time().__int__() - time.timezone) % 86400
-    if curr > 19800:
-        ret = 86400 - curr + 19800
+    if curr > starter:
+        ret = 86400 - curr + starter
         result, sec = divmod(ret, 60)
         hour = result // 60
         minute = result % 60
-    elif curr < 19800:
-        ret = 19800 - curr 
+    elif curr < starter:
+        ret = starter - curr 
         result, sec = divmod(ret, 60)
         hour = result // 60
         minute = result % 60
@@ -110,7 +111,7 @@ def time_to_next_0530():
         hour = 0
         minute = 0
         sec = 0
-    return "距离下次0530还剩: {:02}:{:02}:{:02}".format(hour, minute, sec)
+    return "距离下次{}还剩: {:02}:{:02}:{:02}".format(starter.rsplit('00')[0], hour, minute, sec)
 
 
 def inline_charge():
@@ -135,7 +136,7 @@ def inline_battery(bot, update):
     if query == '':
         try:
             c = calBattery() + ' ' + str(random.choice(emoji))
-            d = time_to_next_0530() + ' ' + str(random.choice(emoji))
+            d = count_down(053000) + ' ' + str(random.choice(emoji))
             logging.info('battery now {}'.format(c))
             results.append(
                 InlineQueryResultArticle(

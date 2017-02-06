@@ -136,7 +136,7 @@ def inline_battery(bot, update):
     if query == '':
         try:
             c = calBattery() + ' ' + str(random.choice(emoji))
-            d = count_down(053000) + ' ' + str(random.choice(emoji))
+            d = count_down('053000') + ' ' + str(random.choice(emoji))
             logging.info('battery now {}'.format(c))
             results.append(
                 InlineQueryResultArticle(

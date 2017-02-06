@@ -135,19 +135,16 @@ def inline_battery(bot, update):
             update.inline_query.from_user.username))
     if query == '':
         try:
-            c = calBattery() + ' ' + str(random.choice(emoji))
-            d = count_down('053000') + ' ' + str(random.choice(emoji))
+            c = [calBattery() + ' ' + str(random.choice(emoji))]
+            c.append(count_down('053000') + ' ' + str(random.choice(emoji)))
+            c.append(count_down('215000') + ' ' + str(random.choice(emoji)))
             logging.info('battery now {}'.format(c))
-            results.append(
-                InlineQueryResultArticle(
-                    id=uuid4(),
-                    title=c,
-                    input_message_content=InputTextMessageContent(c)))
-            results.append(
-                InlineQueryResultArticle(
-                    id=uuid4(),
-                    title=d,
-                    input_message_content=InputTextMessageContent(d)))
+            for i in c:
+                results.append(
+                    InlineQueryResultArticle(
+                        id=uuid4(),
+                        title=i,
+                        input_message_content=InputTextMessageContent(i)))
             results.append(
                 InlineQueryResultArticle(
                     id=uuid4(),

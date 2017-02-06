@@ -111,7 +111,7 @@ def count_down(ts):
         hour = 0
         minute = 0
         sec = 0
-    return "距离下次{}还剩: {:02}:{:02}:{:02}".format(starter.rsplit('00')[0], hour, minute, sec)
+    return "距离{}还剩: {:02}:{:02}:{:02}".format(ts.rsplit('00')[0], hour, minute, sec)
 
 
 def inline_charge():
